@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.0.0)
+set(APP "FFMpegAndOpenALCase")
+project(${APP})
+file(GLOB_RECURSE src ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
+add_executable(${APP} ${src})
