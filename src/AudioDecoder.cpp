@@ -200,14 +200,10 @@ int AudioDecoder::DecodeThread()
                 frame->pts = av_rescale_q(packet->pts, m_pFormatCtx->streams[m_nAudioIndex]->time_base, CPP_TIME_BASE_Q);
                 
                 //resample
-                int outSizeCandidate = m_outSampleRate * 8 *
-                double(frame->duration) / 1000000.0;
-                uint8_t* convertData = (uint8_t*)av_malloc(sizeof(uint8_t) * outSizeCandidate);
-                int out_samples = swr_convert(au_convert_ctx,
-                                              &convertData, outSizeCandidate,
-                                              (const uint8_t**)&pAudioFrame->data[0], pAudioFrame->nb_samples);
-                int Audiobuffer_size = av_samples_get_buffer_size(NULL,
-                                                                  m_outChs, out_samples,AV_SAMPLE_FMT_S16,1);
+                int outSizeCandidate = m_outSampleRate * 8 * double(frame->duration) / 1000000.0;
+                uint8_t* convertData = (uint8_t*)malloc(sizeof(uint8_t) * outSizeCandidate);
+                int out_samples = swr_convert(au_convert_ctx,                                              &convertData, outSizeCandidate,                                              (const uint8_t**)&pAudioFrame->data[0], pAudioFrame->nb_samples);
+                int Audiobuffer_size = av_samples_get_buffer_size(NULL,                                                                  m_outChs, out_samples,AV_SAMPLE_FMT_S16,1);
                 frame->data = convertData;
                 frame->size = Audiobuffer_size;
                 std::unique_lock<std::mutex> lck(*m_pmtx);
